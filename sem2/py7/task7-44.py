@@ -24,8 +24,10 @@ def func(filename):
                 sum_ = 0
     if (sum_max is None):
         print("File is empty")
+        return -2
     file.close()
-    return -2
+    return sum_max
+    
 
 print(func("f.txt"))
 input("Press Enter to exit")
