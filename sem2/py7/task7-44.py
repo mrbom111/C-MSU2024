@@ -5,7 +5,7 @@ def func(filename):
         print("File error")
         return -1
 
-    sum_ = 0
+    temp_sum = 0
     sum_max = None
 
     for line in file:
@@ -15,13 +15,13 @@ def func(filename):
             if sum_max is None:
                 sum_max = x
 
-            sum_ += x
+            temp_sum += x
 
-            if sum_ > sum_max:
-                sum_max = sum_
+            if temp_sum > sum_max:
+                sum_max = temp_sum
 
-            if sum_ <= 0:
-                sum_ = 0
+            if temp_sum <= 0:
+                temp_sum = 0
     if (sum_max is None):
         print("File is empty")
         return -2
