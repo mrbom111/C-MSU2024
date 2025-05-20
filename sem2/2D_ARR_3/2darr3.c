@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "2D_ARR_3.h"
 
-#define MAX_LINE 1024
 
 int main(void) {
     FILE *f;
@@ -13,8 +10,9 @@ int main(void) {
     int count;
     char *num;
     char line[MAX_LINE];
+	int col_to_delete;
 	
-	// Ввод из файла
+	// ввод из файла
     f = fopen("data.dat", "r");
     if (f == NULL) {
         printf("file error");
@@ -40,8 +38,12 @@ int main(void) {
 	
     fclose(f);
 	
-	
-	// Вывод в файл
+	col_to_delete = find_column(a, row_len, max_N);
+	if (col_to_delete != -1) {
+		column_del_3(a, row_len, max_N, col_to_delete);
+	}
+		
+	// вывод в файл
     f = fopen("data.res", "w");
     if (f == NULL) {
         printf("file write error");
