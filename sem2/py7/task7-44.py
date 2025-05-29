@@ -1,33 +1,33 @@
-def func(filename):
-    try:
-        file = open(filename, 'r')
-    except FileNotFoundError:
-        print("File error")
-        return -1
+    def func(filename):
+        try:
+            file = open(filename, 'r')
+        except FileNotFoundError:
+            print("File error")
+            return -1
 
-    temp_sum = 0
-    sum_max = None
+        sum_ = 0
+        sum_max = None
 
-    for line in file:
-        for word in line.split():
-            x = float(word)
+        for line in file:
+            for word in line.split():
+                x = float(word)
 
-            if sum_max is None:
-                sum_max = x
+                if sum_max is None:
+                    sum_max = x
 
-            temp_sum += x
+                sum_ += x
 
-            if temp_sum > sum_max:
-                sum_max = temp_sum
+                if sum_ > sum_max:
+                    sum_max = sum_
 
-            if temp_sum <= 0:
-                temp_sum = 0
-    if (sum_max is None):
-        print("File is empty")
-        return -2
-    file.close()
-    return sum_max
-    
+                if sum_ <= 0:
+                    sum_ = 0
+        if (sum_max is None):
+            print("File is empty")
+            return -2
+        file.close()
+        return sum_max
+        
 
-print(func("f.txt"))
-input("Press Enter to exit")
+    print(func("f.txt"))
+    input("Press Enter to exit")

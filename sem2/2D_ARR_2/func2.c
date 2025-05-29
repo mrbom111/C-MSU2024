@@ -1,40 +1,31 @@
 #include "2D_ARR_2.h"
-void func(const char *input_filename, const char *output_filename) {
+void func(const char *input_filename) {
     int max_N, max_M, M, N;
     int **a;
     FILE *f;
-
+    int shift;
+    int* subset;
+    int subset_size,col1,col2,min_value;
+    
     f = fopen(input_filename, "r");
     if (f == NULL) {
-        printf("file error\n");
+        printf("read file error\n");
         return;
     }
 
     fscanf(f, "%d %d", &M, &N);
     fscanf(f, "%d %d", &max_N, &max_M);
 
-    a = (int **)malloc(max_N * sizeof(int *));
-    if (a == NULL) {
-        printf("pointer memory error");
-        fclose(f);
-        return;
-    }
+    a = (int **)malloc (max_N*sizeof(int *) + max_N*max_M*sizeof(int)); //память под указатели на строки
+    a[0] = (int *)(a + max_N);
+    for (int i=1; i < max_N; i++) {a[i] = a[i-1] + max_M;}
 
-    for (int i = 0; i < max_N; i++) {
-        a[i] = (int *)malloc(max_M * sizeof(int));
-        if (a[i] == NULL) {
-            printf("memory error");
-            for (int j = 0; j < i; j++) free(a[j]);
-            free(a);
-            fclose(f);
-            return;
-        }
-    }
+    
 
     for (int i = 0; i < max_N; i++) {
         for (int j = 0; j < max_M; j++) {
             if (fscanf(f, "%d", &a[i][j]) != 1) {
-                printf("data error\n");
+                printf("data error");
                 fclose(f);
                 return;
             }
@@ -43,8 +34,8 @@ void func(const char *input_filename, const char *output_filename) {
 
     fclose(f);
 
-    int* subset = (int *)malloc(max_M * sizeof(int));
-    int subset_size = 0;
+    subset = (int *)malloc(max_M * sizeof(int)); //массив ноемров столбцов
+    subset_size = 0;
 
     for (int j = 0; j < max_M; j++) {
         int flag = 1;
@@ -55,20 +46,21 @@ void func(const char *input_filename, const char *output_filename) {
             }
         }
         if (flag == 1) {
-            subset[subset_size++] = j;
+            subset[subset_size] = j;
+            subset_size++;
         }
     }
 
-    int shift = 0;
+    shift = 0; //сдвиг
 
     for (int i = 0; i + 1 < subset_size; i += 2) {
-        int col1 = subset[i] - shift;
-        int col2 = subset[i + 1] - shift;
+        col1 = subset[i] - shift;
+        col2 = subset[i+1] - shift;
 
         for (int row = 0; row < max_N; row++) {
-            int min_value = a[0][col2];
-            for (int k = 1; k <= row; k++) {
-                if (a[k][col2] < min_value) {
+            min_value = a[0][col2];
+            for (int k=1; k<= row; k++) {
+                if (a[k][col2]< min_value) {
                     min_value = a[k][col2];
                 }
             }
@@ -80,8 +72,18 @@ void func(const char *input_filename, const char *output_filename) {
     }
 
     free(subset);
+	//
+	for (int i = 1; i < max_N; i++) {
+		for (int j = 0; j < max_M; j++) {
+			a[0][i * max_M + j] = a[i][j];
+		}
+	}
 
-    f = fopen(output_filename, "w");
+	for (int i = 1; i < max_N; i++) {
+		a[i] = a[0] + i * max_M;
+	}
+//
+    f = fopen("data.res", "w");
     if (f == NULL) {
         printf("write file error");
         return;
@@ -96,8 +98,5 @@ void func(const char *input_filename, const char *output_filename) {
 
     fclose(f);
 
-    for (int i = 0; i < max_N; i++) {
-        free(a[i]);
-    }
     free(a);
 }

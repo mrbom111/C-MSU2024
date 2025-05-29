@@ -13,24 +13,16 @@ int main(void) {
     }
 
     fscanf(f, "%d %d", &max_N, &max_M);
-
-    a = (int **)malloc(max_N * sizeof(int *)); 
+    a = (int **)malloc (max_N*sizeof(int *) + max_N*max_M*sizeof(int));
+    a[0] = (int *)(a + max_N);
+    for (int i=1; i < max_N; i++) {a[i] = a[i-1] + max_M;}
     if (a == NULL) {
         printf("pointer memory error");
         fclose(f);
         return 1;
     }
 
-    for (int i = 0; i < max_N; i++) {
-        a[i] = (int *)malloc(max_M * sizeof(int));
-        if (a[i] == NULL) {
-            printf("memory error");
-            for (int j = 0; j < i; j++) free(a[j]);
-            free(a);
-            fclose(f);
-            return 1;
-        }
-    }
+
 
     for (int i = 0; i < max_N; i++) {
         for (int j = 0; j < max_M; j++) {
@@ -44,6 +36,17 @@ int main(void) {
     fclose(f);
 
     delete_max_columns(a, max_N, &max_M); 
+		
+	for (int i = 1; i < max_N; i++) {// Сжимаем данные в памяти a[0]
+		for (int j = 0; j < max_M; j++) {
+			a[0][i * max_M + j] = a[i][j];
+		}
+	}
+
+	
+	for (int i = 1; i < max_N; i++) {// Переназначаем указатели
+		a[i] = a[0] + i * max_M;
+	}
 
     f = fopen("data.res", "w");
     if (f == NULL) {
@@ -57,12 +60,16 @@ int main(void) {
         }
         fprintf(f, "\n");
     }
-
+    fprintf(f, "проверка памяти\n");
+    for (int m = 0; m < max_N * max_M; m++) {
+        
+        fprintf(f, "|%d|",a[0][m]);
+    }
     fclose(f);
 
-    for (int i = 0; i < max_N; i++) {
-        free(a[i]);
-    }
+//     for (int i = 0; i < max_N; i++) {
+//         free(a[i]);
+//     }
     free(a);
 	printf("Done");
 	

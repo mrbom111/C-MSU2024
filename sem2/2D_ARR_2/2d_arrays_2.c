@@ -3,7 +3,7 @@
 
 
 int main(void) {
-    func("data.dat", "data.res");
+    func("data.dat");
     return 0;
 }
 
