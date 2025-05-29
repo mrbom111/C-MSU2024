@@ -51,25 +51,28 @@ void func(const char *input_filename) {
         }
     }
 
-    shift = 0; //сдвиг
+        shift = 0; //сдвиг
 
-    for (int i = 0; i + 1 < subset_size; i += 2) {
-        col1 = subset[i] - shift;
-        col2 = subset[i+1] - shift;
+    for (int i = 0; i + 1 < subset_size; i += 2) {
+        col1 = subset[i] - shift;
+        col2 = subset[i+1] - shift;
 
-        for (int row = 0; row < max_N; row++) {
-            min_value = a[0][col2];
-            for (int k=1; k<= row; k++) {
-                if (a[k][col2]< min_value) {
-                    min_value = a[k][col2];
-                }
-            }
-            a[row][col1] = min_value;
-        }
+        //первый элемент всегда минимум
+        a[0][col1] = a[0][col2];
 
-        column_del(a, max_N, &max_M, col2);
-        shift++;
-    }
+        //в остальных всегда минимум либо текущий, либо предыдущий 
+        for (int row = 1; row < max_N; row++) {
+            if (a[row][col2] < a[row - 1][col1]) {
+                a[row][col1] = a[row][col2];
+            } else {
+                a[row][col1] = a[row - 1][col1];
+            }
+        }
+
+        column_del(a, max_N, &max_M, col2);
+        shift++;
+	}
+	    
 
     free(subset);
 	//
